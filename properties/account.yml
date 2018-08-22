@@ -1,0 +1,75 @@
+server:
+  port: 8080
+  tomcat:
+    max-threads: 800
+    uri-encoding: UTF-8
+
+spring:
+  application:
+    name: account-service
+  datasource:
+    url: jdbc:mysql://192.168.20.33:3306/account_test?characterEncoding=UTF-8
+    username: root
+    password: root123
+    driver-class-name: com.mysql.jdbc.Driver
+    tomcat:
+      initSQL: SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      connection-init-sql: SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci
+
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    properties:
+      hiberate :
+        dialect: org.hibernate.dialect.MySQL5Dialect
+  data:
+    mongodb:
+      host: 192.168.20.33
+      port: 27017
+      database: account_test
+  redis:
+    database: 0
+    host: ${REDIS_HOST:192.168.20.33}
+    password:
+    port: ${REDIS_PORT:6379}
+    jedis:
+      pool:
+        max-idle: 8
+        min-idle: 0
+        max-active: 8
+        max-wait: -1ms
+  mvc:
+    favicon:
+      enabled: true
+
+  thymeleaf:
+    prefix: classpath:/templates/
+  cloud:
+    service-registry:
+      auto-registration:
+        fail-fast: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://192.168.20.33:8761/eureka/
+    registry-fetch-interval-seconds: 5
+  instance:
+    preferIpAddress: true
+    lease-expiration-duration-in-seconds: 15
+    #服务过期时间配置,超过这个时间没有接收到心跳EurekaServer就会将这个实例剔除
+    #注意，EurekaServer一定要设置eureka.server.eviction-interval-timer-in-ms否则这个配置无效，这个配置一般为服务刷新时间配置的三倍
+    #默认90s
+    lease-renewal-interval-in-seconds: 5
+    #服务刷新时间配置，每隔这个时间会主动心跳一次
+    #默认30s
+# 开启断路器功能
+feign:
+  hystrix:
+    enabled: true
